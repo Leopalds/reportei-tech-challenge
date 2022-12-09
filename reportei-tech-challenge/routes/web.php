@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\auth\GithubAuthController;
+use App\Http\Controllers\RepositoryController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -28,5 +29,7 @@ Route::get('/auth/redirect', function (){
 })->name('auth.github');
 
 Route::get('/auth/callback', [GithubAuthController::class, 'callback'])->name('auth.callback');
+
+Route::get('/teste', [RepositoryController::class, 'teste'])->name('teste')->middleware(['auth']);
 
 require __DIR__.'/auth.php';
