@@ -13,12 +13,13 @@ class GithubAuthController extends Controller
     public function callback()
     {
         $githubUser = Socialite::driver('github')->user();
-
+        
         $user = User::updateOrCreate([
             'github_id' => $githubUser->id,
         ],[
             'name' => $githubUser->name,
             'email' => $githubUser->email,
+            'github_nickname' => $githubUser->nickname,
             'github_token' => $githubUser->token,
             'github_refresh_token' => $githubUser->refreshToken,
         ]);

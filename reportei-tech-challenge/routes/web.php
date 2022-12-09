@@ -20,16 +20,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
 
 Route::get('/auth/redirect', function (){
-    return Socialite::driver('github')->redirect();
+    return Socialite::driver('github')->scopes(['repo'])->redirect();
 })->name('auth.github');
 
 Route::get('/auth/callback', [GithubAuthController::class, 'callback'])->name('auth.callback');
 
-Route::get('/teste', [RepositoryController::class, 'teste'])->name('teste')->middleware(['auth']);
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::get('/repos', [RepositoryController::class, 'index'])->name('repos.index');
+
+    Route::get('/repos/{owner}/{repo_name}', [RepositoryController::class, 'show'])->name('repos.show');
+    
+});
 
 require __DIR__.'/auth.php';

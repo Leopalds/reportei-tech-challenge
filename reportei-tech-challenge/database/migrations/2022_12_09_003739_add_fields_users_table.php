@@ -14,6 +14,7 @@ class AddFieldsUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table){
+            $table->string('github_nickname')->nullable();
             $table->string('github_id')->nullable();
             $table->string('github_token')->nullable();
             $table->string('github_refresh_token')->nullable();
@@ -28,6 +29,7 @@ class AddFieldsUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table){
+            $table->dropColumn('github_nickname');
             $table->dropColumn('github_id');
             $table->dropColumn('github_token');
             $table->dropColumn('github_refresh_token');
