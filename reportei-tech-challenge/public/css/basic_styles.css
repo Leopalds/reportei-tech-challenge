@@ -1,0 +1,49 @@
+/* App */
+body{
+    background-color: #0D1117;
+}
+
+/* Navbar */
+.nav-container{
+    background-color: #161B22;
+}
+.avatar{
+    width: 30px;
+    display: inline-block;
+    border-radius: 50%;
+}
+
+/* Header */
+header{
+    background-color: #161B22;
+    border-bottom: solid 2px #30363D;
+    border-top: solid 2px #30363D;
+}
+header h2{
+    color: #5097E7;
+}
+
+/* Home Content */
+.content-container{
+    min-height: calc(100vh - 150px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100% !important;
+    color: #C9D1D9;
+    font-size: 3.2em;
+}
+
+.content-container a:hover{
+    background-color: #21262C;
+    transition: 400ms;
+}
+
+/* Index */
+.repo-link{
+    transition: all .2s ease-in-out; 
+}
+
+.repo-link:hover{
+    transform: scale(1.1);
+}

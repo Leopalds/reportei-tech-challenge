@@ -15,6 +15,7 @@ class AddFieldsUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table){
             $table->string('github_nickname')->nullable();
+            $table->string('github_avatar')->nullable();
             $table->string('github_id')->nullable();
             $table->string('github_token')->nullable();
             $table->string('github_refresh_token')->nullable();

@@ -1,27 +1,36 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Repositories') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
+@section('header')
+    <h2 class="font-semibold text-xl leading-tight">
+        {{ __('Repositories') }}
+    </h2>
+@endsection
+
+@section('slot')
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200 columns-sm">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <div class="overflow-hidden sm:rounded-lg">
+                <div class="p-6 divide-y divide-slate-500">
+                    <div class="divider"></div>
                     @foreach( $repositories as $repo )
-                        <div class="repo-box sm-6 border mb-4">
-                            <a href="{{ route('repos.show', [
+                        <div class="py-6 grid grid-cols-12 px-4">
+                            <a class="repo-link text-cyan-600 col-span-8" href="{{ route('repos.show', [
                                 'owner' => $repo->owner,
-                                'repo_name' => $repo->name]
-                            ) }}">
-                                <h3>{{ $repo->full_name }}</h3>
-                                <a href="{{ $repo->link }}" target="_blank">External link</a>
+                                'repo_name' => $repo->name
+                            ]) }}">
+                                <h3 class="font-bold">
+                                    {{ $repo->full_name }}
+                                    @if ($repo->owner == auth()->user()->github_nickname)
+                                        <sup class="border border-sky-500 rounded-2xl px-1.5"><small>yours</small></sup>
+                                    @endif
+                                </h3>
+                                
                             </a>
+                            <a class="col-span-4" href="{{ $repo->link }}" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square" style="filter: invert(100%);"></i></a>
                         </div>
                     @endforeach
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

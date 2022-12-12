@@ -16,9 +16,6 @@ use Laravel\Socialite\Facades\Socialite;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 
 Route::get('/auth/redirect', function (){
@@ -28,9 +25,9 @@ Route::get('/auth/redirect', function (){
 Route::get('/auth/callback', [GithubAuthController::class, 'callback'])->name('auth.callback');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/', function () {
+        return view('home');
+    })->name('home');
 
     Route::get('/repos', [RepositoryController::class, 'index'])->name('repos.index');
 

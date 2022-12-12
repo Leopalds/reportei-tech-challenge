@@ -19,6 +19,7 @@ class GithubAuthController extends Controller
         ],[
             'name' => $githubUser->name,
             'email' => $githubUser->email,
+            'github_avatar' => $githubUser->avatar,
             'github_nickname' => $githubUser->nickname,
             'github_token' => $githubUser->token,
             'github_refresh_token' => $githubUser->refreshToken,
@@ -26,6 +27,6 @@ class GithubAuthController extends Controller
 
         Auth::login($user);
         
-        return redirect('/dashboard');
+        return redirect('/');
     }
 }

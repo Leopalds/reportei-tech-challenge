@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\CommitChart;
 use App\Models\Commit;
 use App\Models\Repository;
 use Carbon\Carbon;
@@ -40,8 +41,7 @@ class RepositoryController extends Controller
         //Getting the User Logged In
         $user = Auth::user();
 
-        //Data from format ISO 8601 to get commits since 90 days ago
-        $ninety_days_ago = Carbon::now()->subDays(90)->toIso8601String();
+        $ninety_days_ago = Carbon::now()->subDays(90)->format('Y-m-d');
 
         //Getting the repo infos to save in DB
         $repo_json = Http::withToken($user->github_token)
@@ -56,26 +56,33 @@ class RepositoryController extends Controller
                                 'owner' => $repo_json['owner']['login'],
                                 'link' => $repo_json['html_url'],
                             ]);
-        
-        $commits_json = Http::withToken($user->github_token)
-                        ->get("https://api.github.com/repos/$owner/$repo_name/commits", [
-                            'since' => $ninety_days_ago,
-                        ])->json();
-        $commits = collect();
+        //Storing all the commits in DB
+        $repo->storeCommits();
 
-        foreach( $commits_json as $commit_json){
-            $commit = Commit::updateOrCreate([
-                'hash' => $commit_json['sha'],
-            ],[
-                'date' => Carbon::parse($commit_json['commit']['author']['date'],)
-                    ->setTimezone('America/Sao_Paulo'),
-                'repository_id' => $repo->id
-            ]);
+        $number_of_commits_per_day = collect([]);
+        $days = collect([]);
 
-            $commits->add($commit);
+        for ($days_backwards = 90; $days_backwards >= 0; $days_backwards--) {
+            $date = today()->subDays($days_backwards);
+            $number_of_commits_per_day->push(
+                    Commit::where("repository_id", $repo->id)
+                    ->whereDate('date', $date)->count()
+            );
+            $days->push($date->day . "/" . $date->month);
         }
         
-        return view('repository.show', compact('commits'));
+        $chart = new CommitChart;
+        $chart->labels($days);
+        $dataset = $chart->dataset(
+            'Number of Commits from last 90 days',
+            'line',
+            $number_of_commits_per_day 
+        );
+        
+        $dataset->backgroundColor(collect(['#094327']));
+        $dataset->color(collect(['#094327']));
+
+        return view('repository.show', compact('chart', 'repo'));
     }
 
 }
