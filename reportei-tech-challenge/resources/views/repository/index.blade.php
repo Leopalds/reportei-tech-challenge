@@ -1,9 +1,14 @@
 @extends('layouts.app')
 
 @section('header')
-    <h2 class="font-semibold text-xl leading-tight">
-        {{ __('Repositories') }}
-    </h2>
+    <div class="grid grid-cols-12">
+        <h2 class="text-xl col-start-3 col-span-7">
+            {{ __('Repositories') }}
+        </h2>
+        <a class="col-span-2 text-cyan-600" href="{{ route('home') }}">
+            Voltar
+        </a>
+    </div>
 @endsection
 
 @section('slot')
