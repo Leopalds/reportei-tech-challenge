@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Http;
 
 class RepositoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
@@ -33,6 +33,14 @@ class RepositoryController extends Controller
             $repositories->add($repo);
         }
         
+        if( isset($request) && request('q') != null ){
+            $repositories = $repositories->filter(function ($repo) use ($request) {
+                return stripos($repo->full_name, $request->q) !== FALSE;
+            });
+        }
+
+        $repositories = $repositories->paginate(5);
+
         return view('repository.index', compact('repositories'));
     }
 
