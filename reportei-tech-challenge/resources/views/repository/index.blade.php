@@ -39,6 +39,7 @@
                                 <a class="col-span-4" href="{{ $repo->link }}" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square" style="filter: invert(100%);"></i></a>
                             </div>
                         @endforeach
+                        <div class="divider"></div>
                     </div>
                     {!! $repositories->appends(request()->input())->links() !!}
                 @endif
