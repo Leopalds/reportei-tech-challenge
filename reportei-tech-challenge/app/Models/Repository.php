@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Charts\CommitChart;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -62,6 +63,45 @@ class Repository extends Model
                 'repository_id' => $this->id
             ]);
         }
+    }
 
+    /**
+     * create and return a Commit Chart
+     * 
+     * @param  Integer  $how_many_days_ago Number os days the chart will plot
+     * 
+     * @return App\Charts\CommitChart
+     */
+    public function createCommitChart($how_many_days_ago){
+        //By default if the days isn't an Integer, I use 90 days ago
+        if( !is_numeric($how_many_days_ago) ){
+            $how_many_days_ago = 90;
+        }
+
+        $number_of_commits_per_day = collect([]);
+        $days = collect([]);
+
+        for ($days_backwards = $how_many_days_ago; $days_backwards >= 0; $days_backwards--) {
+            $date = today()->subDays($days_backwards);
+            $number_of_commits_per_day->push(
+                    Commit::where("repository_id", $this->id)
+                    ->whereDate('date', $date)->count()
+            );
+            $days->push($date->day . "/" . $date->month);
+        }
+        
+        $chart = new CommitChart;
+        
+        $chart->labels($days);
+        $dataset = $chart->dataset(
+            "Number of Commits from last $how_many_days_ago days",
+            'line',
+            $number_of_commits_per_day 
+        );
+        
+        $dataset->backgroundColor(collect(['#094327']));
+        $dataset->color(collect(['#094327']));
+
+        return $chart;
     }
 }

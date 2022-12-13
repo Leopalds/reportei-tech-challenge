@@ -44,12 +44,10 @@ class RepositoryController extends Controller
         return view('repository.index', compact('repositories'));
     }
 
-    public function show($owner, $repo_name)
+    public function show($owner, $repo_name, Request $request)
     {
         //Getting the User Logged In
         $user = Auth::user();
-        
-        $ninety_days_ago = Carbon::now()->subDays(90)->format('Y-m-d');
         
         //Getting the repo infos to save in DB
         $response = Http::withToken($user->github_token)
@@ -71,30 +69,9 @@ class RepositoryController extends Controller
                             ]);
         //Storing all the commits in DB
         $repo->storeCommits();
-
-        $number_of_commits_per_day = collect([]);
-        $days = collect([]);
-
-        for ($days_backwards = 90; $days_backwards >= 0; $days_backwards--) {
-            $date = today()->subDays($days_backwards);
-            $number_of_commits_per_day->push(
-                    Commit::where("repository_id", $repo->id)
-                    ->whereDate('date', $date)->count()
-            );
-            $days->push($date->day . "/" . $date->month);
-        }
         
-        $chart = new CommitChart;
-        
-        $chart->labels($days);
-        $dataset = $chart->dataset(
-            'Number of Commits from last 90 days',
-            'line',
-            $number_of_commits_per_day 
-        );
-        
-        $dataset->backgroundColor(collect(['#094327']));
-        $dataset->color(collect(['#094327']));
+        //Creating the Commit's Chart of 90 days ago
+        $chart = $repo->createCommitChart($request->how_many_days);
 
         return view('repository.show', compact('chart', 'repo'));
     }
