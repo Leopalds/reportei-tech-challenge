@@ -48,13 +48,18 @@ class RepositoryController extends Controller
     {
         //Getting the User Logged In
         $user = Auth::user();
-
+        
         $ninety_days_ago = Carbon::now()->subDays(90)->format('Y-m-d');
-
+        
         //Getting the repo infos to save in DB
-        $repo_json = Http::withToken($user->github_token)
-                            ->get("https://api.github.com/repos/$owner/$repo_name")
-                            ->json();
+        $response = Http::withToken($user->github_token)
+                            ->get("https://api.github.com/repos/$owner/$repo_name");
+
+        if($response->failed()){
+            return view('repository.show');
+        }
+
+        $repo_json = $response->json();
 
         //Saving the repo in DB
         $repo = Repository::updateOrCreate([
@@ -80,6 +85,7 @@ class RepositoryController extends Controller
         }
         
         $chart = new CommitChart;
+        
         $chart->labels($days);
         $dataset = $chart->dataset(
             'Number of Commits from last 90 days',
