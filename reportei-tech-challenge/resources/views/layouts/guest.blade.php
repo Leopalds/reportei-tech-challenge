@@ -13,6 +13,12 @@
         <!-- Scripts -->
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         <script src="{{ asset('js/app.js') }}" defer></script>
+
+        <!-- Font Awesome-->
+        <script src="https://kit.fontawesome.com/447edbe4ff.js" crossorigin="anonymous"></script>
+
+        <!-- CSS -->
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/basic_styles.css')}}">
     </head>
     <body>
         <div class="font-sans text-gray-900 antialiased">
