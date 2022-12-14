@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\auth\GithubAuthController;
+use App\Http\Controllers\Auth\GithubAuthController;
 use App\Http\Controllers\RepositoryController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
